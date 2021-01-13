@@ -28,6 +28,7 @@ from .DeviceComponent import DeviceComponent
 from .StepSequencerComponent import StepSequencerComponent
 from .StepSequencerComponent2 import StepSequencerComponent2
 from .StepSequencerComponent3 import StepSequencerComponent3
+from .SetCalcComponent import SetCalcComponent
 from .DrumGroupComponent import DrumGroupComponent
 from .SpecialMixerComponent import SpecialMixerComponent
 from .SpecialSessionComponent import SpecialSessionComponent as SessionComponent, SpecialClipSlotComponent, SpecialSessionZoomingComponent as SessionZoomingComponent, SessionZoomingManagerComponent

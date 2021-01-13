@@ -20,3 +20,10 @@ STEPSEQ_MODE_MULTINOTE = 2
 STEPSEQ_MODE_SCALE_EDIT = 10
 
 LONG_BUTTON_PRESS = 1.0
+
+class SetCalcComponent(CompoundComponent):
+
+	def __init__(self, control_surface = None, matrix = None, side_buttons = None, top_buttons = None):
+		self._osd = None
+		self._control_surface = control_surface
+		super(SetCalcComponent, self).__init__()
