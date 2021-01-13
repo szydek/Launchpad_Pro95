@@ -27,6 +27,7 @@ from .DrumGroupFinderComponent import DrumGroupFinderComponent
 from .DeviceComponent import DeviceComponent
 from .StepSequencerComponent import StepSequencerComponent
 from .StepSequencerComponent2 import StepSequencerComponent2
+from .StepSequencerComponent3 import StepSequencerComponent3
 from .DrumGroupComponent import DrumGroupComponent
 from .SpecialMixerComponent import SpecialMixerComponent
 from .SpecialSessionComponent import SpecialSessionComponent as SessionComponent, SpecialClipSlotComponent, SpecialSessionZoomingComponent as SessionZoomingComponent, SessionZoomingManagerComponent
@@ -185,8 +186,10 @@ class Launchpad_Pro95(IdentifiableControlSurface, OptimizedControlSurface):
 				self._create_actions()
 				self._create_drums()
 				self._create_instrument_component()
-				self._create_step_sequencer()
-				self._create_step_sequencer2()
+				# self._create_step_sequencer()
+				# self._create_step_sequencer2()
+				self._create_step_sequencer3()
+				self._create_set_calc()
 				self._create_mixer()
 				self._create_device()
 				self._create_modes()
@@ -317,11 +320,17 @@ class Launchpad_Pro95(IdentifiableControlSurface, OptimizedControlSurface):
 		)
 		self._drum_group.set_enabled(True)
 
-	def _create_step_sequencer(self):
-		self._step_sequencer = StepSequencerComponent(self)
+	# def _create_step_sequencer(self):
+	# 	self._step_sequencer = StepSequencerComponent(self)
 	
-	def _create_step_sequencer2(self):
-		self._step_sequencer2 = StepSequencerComponent2(self)
+	# def _create_step_sequencer2(self):
+	# 	self._step_sequencer2 = StepSequencerComponent2(self)
+
+	def _create_step_sequencer3(self):
+		self._step_sequencer3 = StepSequencerComponent3(self)
+	
+	def _create_set_calc(self):
+		self._set_calc = SetCalcComponent(self)
 	
 	def _create_instrument_component(self):
 		self._instrument_component = InstrumentComponent(self, self._drum_group)
@@ -616,7 +625,7 @@ class Launchpad_Pro95(IdentifiableControlSurface, OptimizedControlSurface):
 	def _create_user_mode(self):
 		self._user_button_modes = ModesComponent(name='User_Button_Modes', is_enabled=False)
 		
-		self._user_button_modes.add_mode(
+		''' self._user_button_modes.add_mode(
 			'stepsequencer_mode',
 			[
 				partial(self._layout_switch, consts.SESSION_LAYOUT_SYSEX_BYTE),
@@ -641,9 +650,9 @@ class Launchpad_Pro95(IdentifiableControlSurface, OptimizedControlSurface):
 				)
 				#,self._step_sequencer.update()
 			]
-		)
+		) '''
 		
-		self._user_button_modes.add_mode(
+		''' self._user_button_modes.add_mode(
 			'stepsequencer2_mode',
 			[
 				partial(self._layout_switch, consts.SESSION_LAYOUT_SYSEX_BYTE),
@@ -668,13 +677,40 @@ class Launchpad_Pro95(IdentifiableControlSurface, OptimizedControlSurface):
 				)
 				#,self._step_sequencer2.update()
 			]
+		) '''
+
+		self._user_button_modes.add_mode(
+			'stepsequencer3_mode',
+			[
+				partial(self._layout_switch, consts.SESSION_LAYOUT_SYSEX_BYTE),
+				partial(self._layout_setup, consts.DRUM_LAYOUT_SYSEX_BYTE, consts.SYSEX_PARAM_BYTE_STANDALONE_LAYOUT),
+				LayerMode(
+					# self._step_sequencer3,
+					Layer(
+						matrix = self._midimap['Main_Button_Matrix'],
+						prev_track_button = self._midimap['Arrow_Left_Button'],
+						next_track_button = self._midimap['Arrow_Right_Button'],
+						prev_scene_button = self._midimap['Arrow_Up_Button'],
+						next_scene_button = self._midimap['Arrow_Down_Button'],
+						scale_button = self._midimap['Scene_Launch_Button_Matrix_Raw'][0][0],
+						octave_button = self._midimap['Scene_Launch_Button_Matrix_Raw'][0][1],
+						pitch_button = self._midimap['Scene_Launch_Button_Matrix_Raw'][0][2],
+						quantization_button = self._midimap['Scene_Launch_Button_Matrix_Raw'][0][3],
+						velocity_button = self._midimap['Scene_Launch_Button_Matrix_Raw'][0][4],
+						length_button = self._midimap['Scene_Launch_Button_Matrix_Raw'][0][5],
+						random_button = self._midimap['Scene_Launch_Button_Matrix_Raw'][0][6],
+						lock_button = self._midimap['Scene_Launch_Button_Matrix_Raw'][0][7]
+					)
+				)
+				#,self._step_sequencer2.update()
+			]
 		)
-		
+
 		self._user_button_modes.add_mode('user_mode', [
 			partial(self._layout_switch, consts.SESSION_LAYOUT_SYSEX_BYTE),
 			partial(self._layout_setup, consts.USER_LAYOUT_SYSEX_BYTE)
 		])
-		self._user_button_modes.selected_mode = "stepsequencer_mode"
+		self._user_button_modes.selected_mode = "stepsequencer3_mode"
 		self._modes.add_mode(
 				'user_mode', 
 				[
@@ -690,24 +726,31 @@ class Launchpad_Pro95(IdentifiableControlSurface, OptimizedControlSurface):
 	def _toggle_user_button_modes(self):
 		self._user_button_modes.cycle_mode()
 		button = self._midimap['User_Mode_Button']
-		if self._user_button_modes.selected_mode == "stepsequencer_mode":
+		'''if self._user_button_modes.selected_mode == "stepsequencer_mode":
 			button.default_states = {True: 'Mode.StepSequencer.On', False: 'Mode.StepSequencer.Off'}
 			self.show_message("drum step sequencer")
 		elif self._user_button_modes.selected_mode == "stepsequencer2_mode":
 			button.default_states = {True: 'Mode.StepSequencer2.On', False: 'Mode.StepSequencer2.Off'}
-			self.show_message("melodic step sequencer")
+			self.show_message("melodic step sequencer") '''
+		if self._user_button_modes.selected_mode == "stepsequencer3_mode":
+			button.default_states = {True: 'Mode.StepSequencer3.On', False: 'Mode.StepSequencer3.Off'}
+			self.show_message("melodic step sequencer 3")
 		elif self._user_button_modes.selected_mode == "user_mode":
 			button.default_states = {True: 'Mode.User.On', False: 'Mode.User.Off'}
 			self.show_message("user mode")
 		button.reset_state()
 		button.turn_on()
 		self._enable_user_button_modes()
-		self._step_sequencer.update()
-		self._step_sequencer2.update()
+		# self._step_sequencer.update()
+		# self._step_sequencer2.update()
+		self._step_sequencer3.update()
+		self._set_calc.update()
 	
 	def _enable_user_button_modes(self):
-		self._step_sequencer.set_enabled(self._user_button_modes.selected_mode == "stepsequencer_mode")
-		self._step_sequencer2.set_enabled(self._user_button_modes.selected_mode == "stepsequencer2_mode")
+		# self._step_sequencer.set_enabled(self._user_button_modes.selected_mode == "stepsequencer_mode")
+		# self._step_sequencer2.set_enabled(self._user_button_modes.selected_mode == "stepsequencer2_mode")
+		self._step_sequencer3.set_enabled(self._user_button_modes.selected_mode == "stepsequencer3_mode")
+		self._set_calc.set_enabled(self._user_button_modes.selected_mode == "setcalc_mode")
 		#self._step_sequencer.update()
 		#self._step_sequencer2.update()
 		

@@ -28,6 +28,9 @@ class Colors:
 		class StepSequencer2:
 			On = Rgb.ORANGE
 			Off = Rgb.ORANGE_HALF
+		class StepSequencer3:
+			On = Rgb.MINT
+			Off = Rgb.MINT_HALF
 		class User:
 			On = Rgb.DARK_BLUE
 			Off = Rgb.DARK_BLUE_HALF
@@ -205,6 +208,32 @@ class Colors:
 		class Octave:
 			On = Rgb.PURPLE
 			Dim = Rgb.PURPLE_HALF
+			Off = Rgb.BLACK
+		class Velocity:
+			On = Rgb.LIGHT_BLUE
+			Dim = Rgb.LIGHT_BLUE_HALF
+			Off = Rgb.BLACK
+		class Length:
+			On = Rgb.MINT
+			Dim = Rgb.MINT_HALF
+			Off = Rgb.BLACK
+		class Random:
+			On = Rgb.RED
+			Off = Rgb.RED
+		class NoteEditor:
+			MetronomeInPage = Rgb.BLUE
+			MetronomeInOtherPage = Rgb.BLUE_HALF
+			PlayInPage = Rgb.RED
+			PlayInOtherPage = Rgb.RED_HALF
+
+	class StepSequencer3:
+		class Pitch:
+			On = Rgb.DARK_BLUE
+			Dim = Rgb.DARK_BLUE_HALF
+			Off = Rgb.BLACK
+		class Octave:
+			On = Rgb.PURPLE_HALF
+			Dim = Rgb.PURPLE
 			Off = Rgb.BLACK
 		class Velocity:
 			On = Rgb.LIGHT_BLUE
