@@ -34,6 +34,7 @@ from .SpecialMixerComponent import SpecialMixerComponent
 from .SpecialSessionComponent import SpecialSessionComponent as SessionComponent, SpecialClipSlotComponent, SpecialSessionZoomingComponent as SessionZoomingComponent, SessionZoomingManagerComponent
 from .SpecialModesComponent import SpecialModesComponent, SpecialReenterBehaviour, CancelingReenterBehaviour
 from .InstrumentComponent import InstrumentComponent
+from .SetCalcComponent import SetCalcComponent
 #NEW from .UserMatrixComponent import UserMatrixComponent
 import consts
 NUM_TRACKS = 8
@@ -331,7 +332,7 @@ class Launchpad_Pro95(IdentifiableControlSurface, OptimizedControlSurface):
 		self._step_sequencer3 = StepSequencerComponent3(self)
 	
 	def _create_set_calc(self):
-		self._set_calc = SetCalcComponent(self)
+		self._set_calc = SetCalcComponent(self, self._drum_group)
 	
 	def _create_instrument_component(self):
 		self._instrument_component = InstrumentComponent(self, self._drum_group)
@@ -546,7 +547,7 @@ class Launchpad_Pro95(IdentifiableControlSurface, OptimizedControlSurface):
 		#	#translation_channel=consts.DR_MAP_CHANNEL
 		#)
 		
-		self._instrument_component._modes.set_enabled(False)
+		self._instrument_component._modes.set_enabled(False) # stz removed to test
 		self._instrument_component.set_layers(self._midimap)
 		self._modes.add_mode(
 			'note_mode', 
@@ -679,39 +680,53 @@ class Launchpad_Pro95(IdentifiableControlSurface, OptimizedControlSurface):
 				#,self._step_sequencer2.update()
 			]
 		) '''
-
+		self._set_calc._modes.set_enabled(False) # stz removed to test
+		self._set_calc.set_layers(self._midimap)
 		self._user_button_modes.add_mode(
-			'stepsequencer3_mode',
+			'setcalc_mode',
 			[
+				#note_mode_scene_launch_translation,
+				self._set_calc._modes,
+				self._set_calc._detect_mode,
+				self._select_target_track,
+				self._clip_actions_component,
+				self._show_playing_clip,
+				self._set_clip_actions_type
+			],
+			behaviour=ReenterBehaviour(self.toggle_detail_view)
+		)
+
+		'''[
 				partial(self._layout_switch, consts.SESSION_LAYOUT_SYSEX_BYTE),
 				partial(self._layout_setup, consts.DRUM_LAYOUT_SYSEX_BYTE, consts.SYSEX_PARAM_BYTE_STANDALONE_LAYOUT),
 				LayerMode(
 					# self._step_sequencer3,
+					self._set_calc,
 					Layer(
 						matrix = self._midimap['Main_Button_Matrix'],
-						prev_track_button = self._midimap['Arrow_Left_Button'],
-						next_track_button = self._midimap['Arrow_Right_Button'],
-						prev_scene_button = self._midimap['Arrow_Up_Button'],
-						next_scene_button = self._midimap['Arrow_Down_Button'],
-						scale_button = self._midimap['Scene_Launch_Button_Matrix_Raw'][0][0],
-						octave_button = self._midimap['Scene_Launch_Button_Matrix_Raw'][0][1],
-						pitch_button = self._midimap['Scene_Launch_Button_Matrix_Raw'][0][2],
-						quantization_button = self._midimap['Scene_Launch_Button_Matrix_Raw'][0][3],
-						velocity_button = self._midimap['Scene_Launch_Button_Matrix_Raw'][0][4],
-						length_button = self._midimap['Scene_Launch_Button_Matrix_Raw'][0][5],
-						random_button = self._midimap['Scene_Launch_Button_Matrix_Raw'][0][6],
-						lock_button = self._midimap['Scene_Launch_Button_Matrix_Raw'][0][7]
+						# prev_track_button = self._midimap['Arrow_Left_Button'],
+						# next_track_button = self._midimap['Arrow_Right_Button'],
+						# prev_scene_button = self._midimap['Arrow_Up_Button'],
+						# next_scene_button = self._midimap['Arrow_Down_Button'],
+						# scale_button = self._midimap['Scene_Launch_Button_Matrix_Raw'][0][0],
+						# octave_button = self._midimap['Scene_Launch_Button_Matrix_Raw'][0][1],
+						# pitch_button = self._midimap['Scene_Launch_Button_Matrix_Raw'][0][2],
+						# quantization_button = self._midimap['Scene_Launch_Button_Matrix_Raw'][0][3],
+						# velocity_button = self._midimap['Scene_Launch_Button_Matrix_Raw'][0][4],
+						# length_button = self._midimap['Scene_Launch_Button_Matrix_Raw'][0][5],
+						# random_button = self._midimap['Scene_Launch_Button_Matrix_Raw'][0][6],
+						# lock_button = self._midimap['Scene_Launch_Button_Matrix_Raw'][0][7]
 					)
 				)
 				#,self._step_sequencer2.update()
 			]
-		)
+		) '''
 
 		self._user_button_modes.add_mode('user_mode', [
 			partial(self._layout_switch, consts.SESSION_LAYOUT_SYSEX_BYTE),
 			partial(self._layout_setup, consts.USER_LAYOUT_SYSEX_BYTE)
 		])
-		self._user_button_modes.selected_mode = "stepsequencer3_mode"
+		self._user_button_modes.selected_mode = "setcalc_mode"
 		self._modes.add_mode(
 				'user_mode', 
 				[
@@ -733,9 +748,9 @@ class Launchpad_Pro95(IdentifiableControlSurface, OptimizedControlSurface):
 		elif self._user_button_modes.selected_mode == "stepsequencer2_mode":
 			button.default_states = {True: 'Mode.StepSequencer2.On', False: 'Mode.StepSequencer2.Off'}
 			self.show_message("melodic step sequencer") '''
-		if self._user_button_modes.selected_mode == "stepsequencer3_mode":
-			button.default_states = {True: 'Mode.StepSequencer3.On', False: 'Mode.StepSequencer3.Off'}
-			self.show_message("melodic step sequencer 3")
+		if self._user_button_modes.selected_mode == "setcalc_mode":
+			button.default_states = {True: 'Mode.SetCalc.On', False: 'Mode.SetCalc.Off'}
+			self.show_message("set theory sequencer")
 		elif self._user_button_modes.selected_mode == "user_mode":
 			button.default_states = {True: 'Mode.User.On', False: 'Mode.User.Off'}
 			self.show_message("user mode")
@@ -744,13 +759,13 @@ class Launchpad_Pro95(IdentifiableControlSurface, OptimizedControlSurface):
 		self._enable_user_button_modes()
 		# self._step_sequencer.update()
 		# self._step_sequencer2.update()
-		self._step_sequencer3.update()
+		# self._step_sequencer3.update()
 		self._set_calc.update()
 	
 	def _enable_user_button_modes(self):
 		# self._step_sequencer.set_enabled(self._user_button_modes.selected_mode == "stepsequencer_mode")
 		# self._step_sequencer2.set_enabled(self._user_button_modes.selected_mode == "stepsequencer2_mode")
-		self._step_sequencer3.set_enabled(self._user_button_modes.selected_mode == "stepsequencer3_mode")
+		# self._step_sequencer3.set_enabled(self._user_button_modes.selected_mode == "stepsequencer3_mode")
 		self._set_calc.set_enabled(self._user_button_modes.selected_mode == "setcalc_mode")
 		#self._step_sequencer.update()
 		#self._step_sequencer2.update()

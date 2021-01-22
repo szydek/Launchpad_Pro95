@@ -28,7 +28,7 @@ class Colors:
 		class StepSequencer2:
 			On = Rgb.ORANGE
 			Off = Rgb.ORANGE_HALF
-		class StepSequencer3:
+		class SetCalc:
 			On = Rgb.MINT
 			Off = Rgb.MINT_HALF
 		class User:
@@ -226,31 +226,21 @@ class Colors:
 			PlayInPage = Rgb.RED
 			PlayInOtherPage = Rgb.RED_HALF
 
-	class StepSequencer3:
-		class Pitch:
-			On = Rgb.DARK_BLUE
-			Dim = Rgb.DARK_BLUE_HALF
-			Off = Rgb.BLACK
+	class SetCalc:
+		FeedbackRecord = Rgb.RED
+		Feedback = Rgb.GREEN
 		class Octave:
-			On = Rgb.PURPLE_HALF
-			Dim = Rgb.PURPLE
-			Off = Rgb.BLACK
-		class Velocity:
-			On = Rgb.LIGHT_BLUE
-			Dim = Rgb.LIGHT_BLUE_HALF
-			Off = Rgb.BLACK
-		class Length:
-			On = Rgb.MINT
-			Dim = Rgb.MINT_HALF
-			Off = Rgb.BLACK
-		class Random:
-			On = Rgb.RED
-			Off = Rgb.RED
-		class NoteEditor:
-			MetronomeInPage = Rgb.BLUE
-			MetronomeInOtherPage = Rgb.BLUE_HALF
-			PlayInPage = Rgb.RED
-			PlayInOtherPage = Rgb.RED_HALF
+			On = Rgb.GREEN
+			Off = Rgb.GREEN_HALF
+		class Scale:
+			On = Rgb.AMBER
+			Off = Rgb.AMBER_HALF
+		class Pads:
+			Root = Rgb.BLUE
+			InScale = Rgb.LIGHT_BLUE_HALF
+			Highlight = Rgb.LIGHT_BLUE
+			OutOfScale = Rgb.DARK_GREY
+			Invalid = Rgb.BLACK
 			
 	class Recording:
 		On = Rgb.RED
